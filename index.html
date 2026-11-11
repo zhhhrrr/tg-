@@ -72,6 +72,8 @@ form#send input{margin:0}
     <input id="apiId" type="number" inputmode="numeric" placeholder="api_id" autocomplete="off">
     <input id="apiHash" type="password" placeholder="api_hash" autocomplete="off">
     <button id="loginBtn" class="primary" style="width:100%;margin-top:10px">Войти</button>
+    <pre id="err" style="white-space:pre-wrap;word-break:break-word;font-size:12px;color:#e0605a;user-select:text"></pre>
+    <p style="text-align:center;font-size:12px">v4</p>
   </section>
 
   <section id="main" class="hidden" style="display:flex;flex-direction:column;flex:1;min-height:0">
@@ -96,6 +98,6 @@ form#send input{margin:0}
   <div class="row"><button id="mOk" class="primary" style="flex:1">ОК</button></div>
 </div></div>
 
-<script type="module" src="./app.js"></script>
+<script type="module" src="./app.js?v=4"></script>
 </body>
 </html>
