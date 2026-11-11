@@ -16,10 +16,7 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: |
-          mkdir -p dist
-          npx esbuild main.js --bundle --format=esm --platform=browser --target=es2020 --minify --outfile=dist/app.js --define:global=globalThis --alias:net=./shim.js --alias:tls=./shim.js --alias:fs=./shim.js --alias:os=./shim.js --alias:path=./shim.js --alias:http=./shim.js --alias:https=./shim.js --alias:zlib=./shim.js --alias:dns=./shim.js --alias:child_process=./shim.js --alias:socks=./shim.js --alias:node-localstorage=./shim.js --alias:crypto=./shim.js --alias:util=./shim.js
-          cp index.html dist/index.html
+      - run: node build.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
