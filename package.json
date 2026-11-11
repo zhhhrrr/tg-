@@ -1,0 +1,11 @@
+{
+  "name": "tg",
+  "private": true,
+  "dependencies": {
+    "telegram": "2.26.16",
+    "buffer": "6.0.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9"
+  }
+}
