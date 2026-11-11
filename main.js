@@ -249,11 +249,11 @@ $("loginBtn").onclick = async () => {
   const id = $("apiId").value.trim(), hash = $("apiHash").value.trim();
   if (!id || !hash) { toast("Введите api_id и api_hash"); return; }
   localStorage.setItem("apiId", id); localStorage.setItem("apiHash", hash);
-  try { await start(id, hash); } catch (e) { toast("Не удалось войти", 4000); $("err").textContent = "v4 " + (e && e.stack || e); }
+  try { await start(id, hash); } catch (e) { toast("Не удалось войти", 4000); $("err").textContent = "v5 " + (e && (e.name + ": " + e.message + "\n" + e.stack) || e); }
 };
 
 /* ---------- запуск ---------- */
 const savedId = localStorage.getItem("apiId"), savedHash = localStorage.getItem("apiHash");
-if (savedId && savedHash) { show("main"); start(savedId, savedHash).catch((e) => { show("login"); toast("Ошибка входа", 4000); $("err").textContent = "v4 " + (e && e.stack || e); }); }
+if (savedId && savedHash) { show("main"); start(savedId, savedHash).catch((e) => { show("login"); toast("Ошибка входа", 4000); $("err").textContent = "v5 " + (e && (e.name + ": " + e.message + "\n" + e.stack) || e); }); }
 else show("login");
 if ("storage" in navigator && navigator.storage.persist) navigator.storage.persist();
