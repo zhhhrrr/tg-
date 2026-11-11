@@ -129,7 +129,7 @@ function ask(label, secret) {
 
 async function start(apiId, apiHash) {
   const session = new StringSession(localStorage.getItem("sess") || "");
-  client = new TelegramClient(session, Number(apiId), apiHash, { connectionRetries: 5, useWSS: true });
+  client = new TelegramClient(session, Number(apiId), apiHash, { connectionRetries: 5, useWSS: true, deviceModel: "iPhone", systemVersion: "iOS", appVersion: "1.0", langCode: "ru", systemLangCode: "ru" });
   await client.start({
     phoneNumber: () => ask("Телефон в формате +7..."),
     phoneCode: () => ask("Код из Telegram"),
