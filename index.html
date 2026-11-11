@@ -97,8 +97,8 @@ form#send input{margin:0}
 </div></div>
 
 <script type="module">
-import { TelegramClient, utils } from "https://esm.sh/telegram@2.26.16";
-import { StringSession } from "https://esm.sh/telegram@2.26.16/sessions";
+import { TelegramClient, utils, sessions, Api } from "https://esm.sh/telegram@2.26.16";
+const StringSession = sessions.StringSession;
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
@@ -150,7 +150,7 @@ function paintGhost() {
 async function setGhost(v) {
   ghost = v; localStorage.setItem("ghost", v ? "1" : "0"); paintGhost();
   if (v && client?._origInvoke) {
-    try { const { Api } = await import("https://esm.sh/telegram@2.26.16"); await client._origInvoke(new Api.account.UpdateStatus({ offline: true })); } catch {}
+    try { await client._origInvoke(new Api.account.UpdateStatus({ offline: true })); } catch {}
   }
   toast(v ? "Режим призрака включён" : "Режим призрака выключен");
 }
