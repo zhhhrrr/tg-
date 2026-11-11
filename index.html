@@ -97,8 +97,23 @@ form#send input{margin:0}
 </div></div>
 
 <script type="module">
-import { TelegramClient, utils, sessions, Api } from "https://esm.sh/telegram@2.26.16";
-const StringSession = sessions.StringSession;
+import { Buffer } from "https://esm.sh/buffer@6.0.3";
+globalThis.Buffer = globalThis.Buffer || Buffer;
+globalThis.process = globalThis.process || { env: {}, browser: true, version: "", versions: {}, nextTick: (f, ...a) => queueMicrotask(() => f(...a)) };
+
+const SOURCES = [
+  "https://cdn.jsdelivr.net/npm/telegram@2.26.16/+esm",
+  "https://esm.sh/telegram@2.26.16?bundle",
+  "https://esm.sh/telegram@2.19.10?bundle",
+  "https://esm.sh/telegram@2.26.16",
+];
+let TelegramClient, utils, sessions, Api, StringSession;
+async function loadLib(i) {
+  const m = await import(SOURCES[i]);
+  const lib = m.TelegramClient ? m : (m.default || m);
+  TelegramClient = lib.TelegramClient; utils = lib.utils; sessions = lib.sessions; Api = lib.Api;
+  StringSession = sessions.StringSession;
+}
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
@@ -226,6 +241,28 @@ function ask(label, secret) {
 }
 
 async function start(apiId, apiHash) {
+  const first = Number(localStorage.getItem("src") || 0);
+  const order = [...SOURCES.keys()].sort((a, b) => (a === first ? -1 : b === first ? 1 : a - b));
+  let lastErr;
+  for (const i of order) {
+    try {
+      await loadLib(i);
+      await startWith(apiId, apiHash);
+      localStorage.setItem("src", String(i));
+      return;
+    } catch (e) {
+      lastErr = e;
+      const msg = String(e?.message || e);
+      try { await client?.disconnect(); } catch {}
+      client = null;
+      if (!/is not an object|undefined|not a function|not a constructor|Only StringSession|Failed to fetch|import|module/i.test(msg)) throw e;
+      toast(`Источник ${i + 1} не подошёл: ${msg}`, 6000);
+    }
+  }
+  throw lastErr;
+}
+
+async function startWith(apiId, apiHash) {
   const session = new StringSession(localStorage.getItem("sess") || "");
   client = new TelegramClient(session, Number(apiId), apiHash, { connectionRetries: 5, useWSS: true });
   await client.start({
